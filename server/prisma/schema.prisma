@@ -1,0 +1,57 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id             Int            @id @default(autoincrement())
+    username       String         @unique
+    email          String         @unique
+    password       String
+    avatarUrl      String?
+    role           String         @default("user")
+    createdAt      DateTime       @default(now())
+    hostedSessions Session[]      @relation("HostedSessions")
+    sessions       UserSession[]
+    queueItems     SessionQueue[]
+}
+
+model Session {
+    id           Int            @id @default(autoincrement())
+    sessionName  String
+    hostId       Int
+    host         User           @relation("HostedSessions", fields: [hostId], references: [id], onDelete: Cascade)
+    startTime    DateTime       @default(now())
+    endTime      DateTime?
+    isLive       Boolean        @default(true)
+    participants UserSession[]
+    queueItems   SessionQueue[]
+}
+
+model UserSession {
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId    Int
+    session   Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+    sessionId Int
+    joinedAt  DateTime @default(now())
+
+    @@id([userId, sessionId])
+}
+
+model SessionQueue {
+    id         Int      @id @default(autoincrement())
+    session    Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+    sessionId  Int
+    youtubeUrl String
+    addedBy    User     @relation(fields: [userId], references: [id])
+    userId     Int
+    position   Int
+    addedAt    DateTime @default(now())
+    isPlayed   Boolean  @default(false)
+
+    @@unique([sessionId, position])
+}

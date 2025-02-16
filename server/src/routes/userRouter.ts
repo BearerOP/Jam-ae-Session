@@ -10,8 +10,8 @@ userRouter.get("/", (req, res) => {
     res.send("User Router");
 });
 
-userRouter.get("/me", userAuth as express.RequestHandler,
-    (async (req, res) => {
+userRouter.get("/me", userAuth,
+    async (req, res) => {
         try {
             const userId = req.userId as number;
             const user = await prisma.user.findUnique({
@@ -29,16 +29,17 @@ userRouter.get("/me", userAuth as express.RequestHandler,
             })
 
             if (!user) {
-                return res.status(404).json("User not found");
+                res.status(404).json("User not found");
             }
 
             res.status(200).json({ data: user, message: "User details fetched successfully" });
-
+            return;
         } catch (error) {
             console.error(error);
             res.status(500).json("An error occurred while fetching user details");
+            return;
         }
-    }) as express.RequestHandler);
+    })
 
 userRouter.post("/login", async (req, res) => {
     const { email, password } = req.body;
@@ -66,13 +67,15 @@ userRouter.post("/login", async (req, res) => {
         } else {
             res.status(401).json("Invalid email or password");
         }
+        return;
     } catch (error) {
         console.error(error);
         res.status(500).json("An error occurred while logging in");
+        return;
     }
 });
 
-userRouter.post("/signup", (async (req, res) => {
+userRouter.post("/signup", async (req, res) => {
     const { email, password, username } = req.body;
     try {
         const hashedPassword = await bcryptjs.hash(password, 10);
@@ -88,14 +91,16 @@ userRouter.post("/signup", (async (req, res) => {
             throw new Error("User creation failed!");
         }
         res.status(201).json("User created successfully");
+        return;
     } catch (error: any) {
         console.error(error);
         if (error.code === "P2002") {
-            return res.status(400).json("User already exists");
+            res.status(400).json("User already exists");
         }
-        return res.status(500).json("An error occurred while creating user");
+        res.status(500).json("An error occurred while creating user");
+        return;
     }
-}) as express.RequestHandler);
+});
 
 
 export default userRouter;

@@ -9,7 +9,7 @@ declare global {
     }
 }
 
-async function userAuth(req: Request, res: Response, next: NextFunction) {
+async function userAuth(req: Request, res: Response, next: NextFunction): Promise<any> {
 
     try {
         const tokenHeader = req.headers['authorization'];

@@ -12,8 +12,8 @@ declare global {
 async function userAuth(req: Request, res: Response, next: NextFunction): Promise<any> {
 
     try {
-        const tokenHeader = req.headers['authorization'];
-
+        const tokenHeader = req.headers.authorization;
+        
         if (!tokenHeader) {
             return res.status(401).send("Unauthorized");
         }

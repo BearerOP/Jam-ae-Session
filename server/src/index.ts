@@ -4,9 +4,11 @@ import SessionManager from "./session";
 import { config } from "dotenv";
 import prisma from "./db";
 import router from "./routes";
+import cors from "cors";
 
 const app = express();
 config();
+app.use(cors());
 
 app.use(express.json());
 
@@ -70,7 +72,7 @@ wss.on("connection", (ws) => {
 
   ws.on("close", () => {
     console.log("Client disconnected");
-    
+
   });
 
   ws.send(

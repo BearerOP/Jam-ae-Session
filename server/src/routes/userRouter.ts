@@ -32,7 +32,7 @@ userRouter.get("/me", userAuth,
                 res.status(404).json("User not found");
             }
 
-            res.status(200).json({ data: user, message: "User details fetched successfully" });
+            res.status(200).json({ user: user, message: "User details fetched successfully" });
             return;
         } catch (error) {
             console.error(error);
@@ -56,7 +56,7 @@ userRouter.post("/login", async (req, res) => {
                 { userId: user.id },
                 process.env.JWT_SECRET as string,
                 {
-                    expiresIn: "1h",
+                    expiresIn: "1day",
                 }
             );
 

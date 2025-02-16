@@ -139,6 +139,8 @@ sessionRouter.post("/:sessionId/queue", userAuth, async (req, res) => {
         });
         res.status(201).json(queueItem);
     } catch (error) {
+        console.log(error);
+        
         res.status(500).json("Error adding to queue");
     }
 });

@@ -38,7 +38,7 @@ wss.on("connection", (ws) => {
   ws.on("message", (data) => {
     try {
       const parsedData = JSON.parse(data.toString());
-
+      console.log("Received message:", parsedData);
       switch (parsedData.event) {
         case "join_session":
           sessionManager.joinSession(
@@ -52,6 +52,13 @@ wss.on("connection", (ws) => {
           sessionManager.leaveSession(
             parsedData.data.sessionId,
             parsedData.data.userId
+          );
+          break;
+
+        case "add_to_queue":
+          sessionManager.addVideoToQueue(
+            parsedData.data.sessionId,
+            parsedData.data.youtubeUrl
           );
           break;
 

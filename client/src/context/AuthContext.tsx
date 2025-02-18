@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         if (token) {
             getUserProfile()
-                .then((user) => setUser(user))
+                .then((user) => setUser(user as User))
                 .catch(() => {
                     localStorage.removeItem("token");
                     setUser(null);
@@ -39,10 +39,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const login = async (email: string, password: string) => {
         try {
-            const { token, message } = await loginUser(email, password);
+            const response = await loginUser(email, password);
+            if (typeof response === 'object' && response !== null && 'token' in response && 'message' in response) {
+                const { token, message } = response;
 
-            localStorage.setItem("token", token);
-            console.log(message);
+                localStorage.setItem("token", token as string);
+                console.log(message);
+            } else {
+                throw new Error('Invalid response format');
+            }
         } catch (error) {
             console.error("Login error:", error);
         }

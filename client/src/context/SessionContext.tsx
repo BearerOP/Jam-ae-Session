@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { createSessionApi } from "../utils/api";
 
 const API_URL = "http://localhost:8080/api/session";
@@ -28,7 +28,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     useEffect(() => {
         // Fetch active sessions on mount
         axios.get(`${API_URL}/active`)
-            .then((res) => setSessions(res.data))
+            .then((res) => setSessions(res.data as Session[]))
             .catch((error) => console.error("Failed to fetch sessions:", error));
 
         // WebSocket Handling
@@ -53,8 +53,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     const createSession = async (name: string) => {
         try {
-            const res: AxiosResponse = await createSessionApi(name);
-            return res.data;
+            const res = await createSessionApi(name) as { data: Session };
+            setSessions((prev) => [...prev, res.data]);
         } catch (error) {
             console.error("Error creating session:", error);
             throw error;
@@ -63,7 +63,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     const joinSession = async (sessionId: number) => {
         try {
-            await axios.post(`${API_URL}/join/${sessionId}`);
+            await axios.post(`${API_URL}/join/${sessionId}`)
             const session = sessions.find((s) => s.id === sessionId);
             if (!session) {
                 throw new Error("Session not found");

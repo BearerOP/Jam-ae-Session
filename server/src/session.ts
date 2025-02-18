@@ -69,11 +69,17 @@ class SessionManager {
   }
 
   addVideoToQueue(sessionId: string, videoUrl: string): void {
+    
     const session = this.sessions.get(sessionId);
+    console.log(session);
+    
     if (session) {
       session.queue.push(videoUrl);
       console.log(`Added video to queue in session ${sessionId}: ${videoUrl}`);
-
+      console.log(session.queue);
+      console.log(!session.currentVideo);
+      
+      console.log("addVideoToQueue");
       if (!session.currentVideo) {
         this.playNextVideo(sessionId);
       } else {

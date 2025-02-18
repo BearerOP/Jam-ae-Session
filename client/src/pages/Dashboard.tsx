@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getActiveSessions } from "../utils/api";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +28,8 @@ const Home = () => {
 
         fetchSessions();
     }, []);
+    console.log(user);
+    
 
     return (
         <>

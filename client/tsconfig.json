@@ -7,5 +7,6 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
+    "noUnusedLocals": false
   }
 }
